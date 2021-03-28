@@ -9,7 +9,7 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	infile := "../redleaf.jpg"
+	infile := "../emma.jpg"
 	canvas, err := decode.ReadFile(infile)
 	if err != nil {
 		t.Fatal(err)
@@ -25,7 +25,12 @@ func TestAll(t *testing.T) {
 	// 	t.Fatal(err)
 	// }
 
-	err = filter.ReAncient(canvas)
+	// err = filter.ReAncient(canvas)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	err = filter.BoxBlur(canvas, 10, 5)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,13 +43,13 @@ func TestAll(t *testing.T) {
 }
 
 func TestGhoul(t *testing.T) {
-	infile := "../redleaf.jpg"
+	infile := "../emma.jpg"
 	canvas, err := decode.ReadFile(infile)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	err = filter.ReAncient(canvas)
+	err = filter.Ghoul(canvas)
 	if err != nil {
 		t.Fatal(err)
 	}
