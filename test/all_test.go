@@ -30,7 +30,7 @@ func TestAll(t *testing.T) {
 	// 	t.Fatal(err)
 	// }
 
-	err = filter.BoxBlur(canvas, 10, 5)
+	err = filter.Scale(canvas, 40, 64)
 	if err != nil {
 		t.Fatal(err)
 	}
