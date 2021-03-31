@@ -5,15 +5,13 @@ import (
 	"image/draw"
 
 	"fxkt.tech/egami"
-	"fxkt.tech/egami/encode"
 )
 
-func Scale(cvs draw.Image, ow, oh int) error {
+// Scale is linear.
+func Scale(cvs draw.Image, ow, oh int) (draw.Image, error) {
 	if cvs == nil {
-		return egami.ErrCanvasIsNil
+		return nil, egami.ErrCanvasIsNil
 	}
-
-	// TODO: ...
 
 	r := cvs.Bounds()
 	iw := r.Max.X - r.Min.X
@@ -28,7 +26,5 @@ func Scale(cvs draw.Image, ow, oh int) error {
 		}
 	}
 
-	encode.WriteFile(newcvs, "xx.jpg")
-
-	return nil
+	return newcvs, nil
 }

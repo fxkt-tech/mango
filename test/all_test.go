@@ -9,13 +9,13 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	infile := "../emma.jpg"
+	infile := "images/emma.jpg"
 	canvas, err := decode.ReadFile(infile)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// err = filter.Clip(canvas, image.Rect(0, 0, 100, 100))
+	// scalecanvas, err := filter.Clip(canvas, image.Rect(300, 300, 400, 400))
 	// if err != nil {
 	// 	t.Fatal(err)
 	// }
@@ -30,12 +30,23 @@ func TestAll(t *testing.T) {
 	// 	t.Fatal(err)
 	// }
 
-	err = filter.Scale(canvas, 40, 64)
+	// scalecanvas, err = filter.Scale(canvas, 40, 64)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	// outfile := "all_out.jpg"
+	// err = encode.WriteFile(scalecanvas, outfile)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+
+	err = filter.SlowBoxBlur(canvas, 10, 5)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	outfile := "redleaf_out.jpg"
+	outfile := "all_out.jpg"
 	err = encode.WriteFile(canvas, outfile)
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +54,7 @@ func TestAll(t *testing.T) {
 }
 
 func TestGhoul(t *testing.T) {
-	infile := "../emma.jpg"
+	infile := "images/emma.jpg"
 	canvas, err := decode.ReadFile(infile)
 	if err != nil {
 		t.Fatal(err)

@@ -7,6 +7,7 @@ import (
 	"fxkt.tech/egami"
 )
 
+// Ghoul is a lab.
 func Ghoul(cvs draw.Image) error {
 	if cvs == nil {
 		return egami.ErrCanvasIsNil

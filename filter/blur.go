@@ -3,12 +3,16 @@ package filter
 import (
 	"image/color"
 	"image/draw"
+	"sync"
 
 	"fxkt.tech/egami"
 )
 
 // warning: this implement is very slow, need to optimize.
-func BoxBlur(cvs draw.Image, radius, power int) error {
+// one goroutine: 5.44s
+// goroutine for per-pix: 1.92s
+// goroutine for per-line: 1.28s
+func SlowBoxBlur(cvs draw.Image, radius, power int) error {
 	if cvs == nil {
 		return egami.ErrCanvasIsNil
 	}
@@ -37,22 +41,28 @@ func BoxBlur(cvs draw.Image, radius, power int) error {
 			dstyy2dh := make([]uint8, h)
 			dstyy2d = append(dstyy2d, dstyy2dh)
 		}
+		wg := &sync.WaitGroup{}
 		for i := 0; i < w; i++ {
-			for j := 0; j < h; j++ {
-				var dstnum uint32
-				var avalinum uint32
-				for ir := i - radius; ir <= i+radius; ir++ {
-					for jr := j - radius; jr <= j+radius; jr++ {
-						if ir < 0 || ir >= w || jr < 0 || jr >= h {
-							continue
+			wg.Add(1)
+			go func(i int) {
+				for j := 0; j < h; j++ {
+					var dstnum uint32
+					var avalinum uint32
+					for ir := i - radius; ir <= i+radius; ir++ {
+						for jr := j - radius; jr <= j+radius; jr++ {
+							if ir < 0 || ir >= w || jr < 0 || jr >= h {
+								continue
+							}
+							avalinum = avalinum + 1
+							dstnum = dstnum + uint32(yy2d[ir][jr])
 						}
-						avalinum = avalinum + 1
-						dstnum = dstnum + uint32(yy2d[ir][jr])
 					}
+					dstyy2d[i][j] = uint8(dstnum / avalinum)
 				}
-				dstyy2d[i][j] = uint8(dstnum / avalinum)
-			}
+				wg.Done()
+			}(i)
 		}
+		wg.Wait()
 
 		for x := rc.Min.X; x <= rc.Max.X; x++ {
 			for y := rc.Min.Y; y <= rc.Max.Y; y++ {
@@ -69,6 +79,18 @@ func BoxBlur(cvs draw.Image, radius, power int) error {
 			}
 		}
 	}
+
+	return nil
+}
+
+func BoxBlur(cvs draw.Image, radius, power int) error {
+	if cvs == nil {
+		return egami.ErrCanvasIsNil
+	}
+
+	// rc := cvs.Bounds()
+	// w := rc.Max.X - rc.Min.X + 1
+	// h := rc.Max.Y - rc.Min.Y + 1
 
 	return nil
 }
