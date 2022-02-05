@@ -1,16 +1,15 @@
 package filter
 
 import (
-	"image/color"
-	"image/draw"
-
-	"fxkt.tech/egami"
+	"fxkt.tech/mango/errors"
+	"fxkt.tech/mango/image/color"
+	"fxkt.tech/mango/image/draw"
 )
 
 // Ghoul is a lab.
 func Ghoul(cvs draw.Image) error {
 	if cvs == nil {
-		return egami.ErrCanvasIsNil
+		return errors.CanvasIsNil
 	}
 
 	radius := 10
@@ -33,8 +32,8 @@ func boxblur_one(cvs draw.Image, radius int) {
 		yy2dh := make([]uint8, h)
 		yy2d = append(yy2d, yy2dh)
 	}
-	for x := rc.Min.X; x <= rc.Max.X; x++ {
-		for y := rc.Min.Y; y <= rc.Max.Y; y++ {
+	for y := rc.Min.Y; y <= rc.Max.Y; y++ {
+		for x := rc.Min.X; x <= rc.Max.X; x++ {
 			r, g, b, _ := cvs.At(x, y).RGBA()
 			yy, _, _ := color.RGBToYCbCr(uint8(r>>8), uint8(g>>8), uint8(b>>8))
 			yy2d[x][y] = yy
@@ -63,8 +62,8 @@ func boxblur_one(cvs draw.Image, radius int) {
 		}
 	}
 
-	for x := rc.Min.X; x <= rc.Max.X; x++ {
-		for y := rc.Min.Y; y <= rc.Max.Y; y++ {
+	for y := rc.Min.Y; y <= rc.Max.Y; y++ {
+		for x := rc.Min.X; x <= rc.Max.X; x++ {
 			r, g, b, a := cvs.At(x, y).RGBA()
 			_, cb, cr := color.RGBToYCbCr(uint8(r>>8), uint8(g>>8), uint8(b>>8))
 			yy := dstyy2d[x][y]

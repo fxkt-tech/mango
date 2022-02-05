@@ -1,22 +1,21 @@
 package filter
 
 import (
-	"image/draw"
-
-	"fxkt.tech/egami"
+	"fxkt.tech/mango/errors"
+	"fxkt.tech/mango/image/draw"
 )
 
 type FlipType uint8
 
-var (
-	HorizontalFlip FlipType = 0
-	VerticalFlip   FlipType = 1
+const (
+	HorizontalFlip FlipType = iota
+	VerticalFlip
 )
 
 // Flip is ...
 func Flip(cvs draw.Image, ft FlipType) error {
 	if cvs == nil {
-		return egami.ErrCanvasIsNil
+		return errors.CanvasIsNil
 	}
 
 	r := cvs.Bounds()
@@ -24,8 +23,8 @@ func Flip(cvs draw.Image, ft FlipType) error {
 	switch ft {
 	case HorizontalFlip:
 		w := r.Max.X - r.Min.X
-		for x := r.Min.X; x <= (r.Min.X+r.Max.X)/2; x++ {
-			for y := r.Min.Y; y <= r.Max.Y; y++ {
+		for y := r.Min.Y; y <= r.Max.Y; y++ {
+			for x := r.Min.X; x <= (r.Min.X+r.Max.X)/2; x++ {
 				p1 := cvs.At(x, y)
 				p2 := cvs.At(w-x, y)
 				cvs.Set(x, y, p2)
@@ -34,8 +33,8 @@ func Flip(cvs draw.Image, ft FlipType) error {
 		}
 	case VerticalFlip:
 		h := r.Max.Y - r.Min.Y
-		for x := r.Min.X; x <= r.Max.X; x++ {
-			for y := r.Min.Y; y <= (r.Min.Y+r.Max.Y)/2; y++ {
+		for y := r.Min.Y; y <= (r.Min.Y+r.Max.Y)/2; y++ {
+			for x := r.Min.X; x <= r.Max.X; x++ {
 				p1 := cvs.At(x, y)
 				p2 := cvs.At(x, h-y)
 				cvs.Set(x, y, p2)

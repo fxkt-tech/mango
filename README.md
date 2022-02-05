@@ -1,4 +1,4 @@
-# egami
+# mango
 Imagination of Image.
 
 编码目标：

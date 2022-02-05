@@ -1,20 +1,19 @@
 package filter
 
 import (
-	"image/draw"
-
-	"fxkt.tech/egami"
+	"fxkt.tech/mango/errors"
+	"fxkt.tech/mango/image/draw"
 )
 
 type RotateType uint8
 
-var (
-	Rotate180 RotateType = 0
+const (
+	Rotate180 RotateType = iota
 )
 
 func Rotate(cvs draw.Image, rt RotateType) error {
 	if cvs == nil {
-		return egami.ErrCanvasIsNil
+		return errors.CanvasIsNil
 	}
 
 	// TODO: ...
